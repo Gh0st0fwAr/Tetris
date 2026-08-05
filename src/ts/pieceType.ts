@@ -7,7 +7,6 @@ export enum PieceType {
 
 export type Offset = { dx: number; dy: number }
 
-/** Смещения блоков относительно pivot (pivot всегда в точке 0, 0) */
 export const PIECE_SHAPES: Record<PieceType, Offset[]> = {
   [PieceType.I]: [
     { dx: -1, dy: 0 },

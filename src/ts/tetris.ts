@@ -1,213 +1,221 @@
 import { Cell } from './cell'
 import { Pivot } from './pivot'
 import { randomPieceType, PIECE_SHAPES, PieceType } from './pieceType'
-// type Cell = {
-//   x: number,
-//   y: number
-// }
 
-type Grid = Cell[][]
 export enum Size {
   Small = 'small',
   Medium = 'medium',
-  Large = 'large'
+  Large = 'large',
 }
 
-// type CellObject = {
-//   [x: number]: {
-//     [y: number]: Cell
-//   }
-// }
-export class Tetris {
-  sizeX: number;
-  sizeY: number;
-  cellSize: number;
-  grid: Cell[][] = [];
-  board: HTMLElement;
-  parentComponent: HTMLElement;
-  activePiece: Pivot | null = null;
-  intervalId: number | null = null;
+export type TetrisUiCallbacks = {
+  onGameOver?: () => void
+}
 
-  constructor(size: Size, parentComponent: HTMLElement) {
-    let sizeX = 0;
-    let sizeY = 0;
-    let cellSize = 0;
-    switch(size) {
-      case Size.Small:
-        sizeX = 7;
-        sizeY = 11;
-        cellSize = 54;
-        break;
-      case Size.Medium:
-        sizeX = 10;
-        sizeY = 16;
-        cellSize = 36;
-        break;
-      case Size.Large:
-        sizeX = 16;
-        sizeY = 24;
-        cellSize = 18;
-        break;
-    }
+const BOARD_GAP = 2
+const BOARD_PADDING = 20
+const VERTICAL_PADDING = 60
+const FALL_INTERVAL_MS = 1000
+
+function calcCellSize(sizeY: number): number {
+  const availableHeight = window.innerHeight - VERTICAL_PADDING
+  const gapsHeight = (sizeY - 1) * BOARD_GAP
+  const cellSize = Math.floor((availableHeight - gapsHeight - BOARD_PADDING) / sizeY)
+  return Math.max(12, cellSize)
+}
+
+function getBoardDimensions(size: Size): { sizeX: number; sizeY: number; cellSize: number } {
+  switch (size) {
+    case Size.Small:
+      return { sizeX: 7, sizeY: 11, cellSize: calcCellSize(11) }
+    case Size.Medium:
+      return { sizeX: 10, sizeY: 16, cellSize: calcCellSize(16) }
+    case Size.Large:
+      return { sizeX: 16, sizeY: 24, cellSize: calcCellSize(24) }
+  }
+}
+
+export class Tetris {
+  sizeX: number
+  sizeY: number
+  cellSize: number
+  grid: Cell[][] = []
+  board: HTMLElement
+  parentComponent: HTMLElement
+  activePiece: Pivot | null = null
+  intervalId: ReturnType<typeof setInterval> | null = null
+
+  private uiCallbacks: TetrisUiCallbacks
+  private isRunning = false
+
+  constructor(size: Size, parentComponent: HTMLElement, uiCallbacks: TetrisUiCallbacks = {}) {
+    const { sizeX, sizeY, cellSize } = getBoardDimensions(size)
+
     this.sizeX = sizeX
     this.sizeY = sizeY
-    this.cellSize = cellSize;
-    this.parentComponent = parentComponent;
-    this.board = document.createElement('div');
-    this.grid = [];
-    this.initControls();
-    this.createBoard();
-    this.startFalling();
-    // this.spawnPiece();
-    // document.addEventListener('keydown', this.handleKeyDown.bind(this));
+    this.cellSize = cellSize
+    this.parentComponent = parentComponent
+    this.uiCallbacks = uiCallbacks
+    this.board = document.createElement('div')
+    this.grid = []
+
+    document.addEventListener('keydown', this.handleKeyDown)
+    this.createBoard()
   }
 
-  initControls(): void {
-    document.addEventListener('keydown', this.handleKeyDown.bind(this))
+  startGame(): void {
+    if (this.isRunning) return
+
+    this.isRunning = true
+    this.spawnPiece()
+    this.startFalling()
   }
 
-  handleKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'ArrowLeft') {
-      this.activePiece?.moveLeft();
-    }
-    if (event.key === 'ArrowRight') {
-      this.activePiece?.moveRight();
-    }
-    if (event.key === 'ArrowDown') {
-      this.activePiece?.moveDown();
-    }
-    if (event.key === ' ') {
-      this.activePiece?.rotate();
+  reset(): void {
+    this.stopFalling()
+    this.activePiece = null
+    this.isRunning = false
+    this.clearGrid()
+  }
+
+  private handleKeyDown = (event: KeyboardEvent): void => {
+    if (!this.isRunning || this.intervalId === null) return
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        this.activePiece?.moveLeft()
+        break
+      case 'ArrowRight':
+        this.activePiece?.moveRight()
+        break
+      case 'ArrowDown':
+        if (this.activePiece?.moveDown() === false) {
+          this.lockPiece()
+          this.spawnPiece()
+        }
+        break
+      case ' ':
+        event.preventDefault()
+        this.activePiece?.rotate()
+        break
     }
   }
 
-  canSpawn(type: PieceType): boolean {
+  private canSpawn(type: PieceType): boolean {
     const spawnX = Math.floor(this.sizeX / 2)
-    const spawnY = 0;
 
-    const offsets = PIECE_SHAPES[type];
-    return offsets.every(({dx, dy}) => {
-      const x = spawnX + dx;
-      const y = spawnY + dy;
-    
+    return PIECE_SHAPES[type].every(({ dx, dy }) => {
+      const x = spawnX + dx
+      const y = dy
+
       if (y < 0 || y >= this.sizeY) return false
       if (x < 0 || x >= this.sizeX) return false
       if (this.grid[y][x].isBlack) return false
       return true
     })
-
-    
   }
 
+  private startFalling(): void {
+    if (this.intervalId !== null) return
 
-  startFalling(): void { 
     this.intervalId = setInterval(() => {
-      // console.log(this.activePiece?.moveDown())
       if (this.activePiece?.moveDown() === false) {
         this.lockPiece()
         this.spawnPiece()
-        // console.log(this.activePiece)
       }
-      
-      // this.checkLines();
-      // this.activePiece?.moveDown();
-      // if (this.activePiece?.moveDown() === true) {
-      //   this.activePiece?.moveDown()
-      // } else {
-      //   // this.
-      // }
-    }, 1000)
-    // console.log(this.intervalId);
-    // console.log(setInterval(() => {}, 1000));
-  };
-
-  isRowFull(y: number): boolean {
-    for (let x = 0; x < this.sizeX; x++) {
-      if (!this.grid[y][x].isBlack) {
-        return false   // нашли белую — ряд НЕ полный
-      }
-    }
-    return true        // все x прошли — ряд полный
+    }, FALL_INTERVAL_MS)
   }
 
-   clearRow(y: number): void {
+  private stopFalling(): void {
+    if (this.intervalId === null) return
+    clearInterval(this.intervalId)
+    this.intervalId = null
+  }
+
+  private isRowFull(y: number): boolean {
+    return this.grid[y].every((cell) => cell.isBlack)
+  }
+
+  private clearRow(y: number): void {
     for (let x = 0; x < this.sizeX; x++) {
-      this.grid[y][x].setBlack(false);
+      this.grid[y][x].setBlack(false)
     }
   }
 
-  clearFullRows(): void {
+  private clearFullRows(): void {
     for (let y = this.sizeY - 1; y >= 0; y--) {
-      if (this.isRowFull(y)) {
-        this.clearRow(y);
-        this.setRowsDown(y);
-        y--;
-      }
+      if (!this.isRowFull(y)) continue
+      this.clearRow(y)
+      this.setRowsDown(y)
+      y--
     }
-   }
+  }
 
-  setRowsDown(fromY: number) {
+  private setRowsDown(fromY: number): void {
     for (let y = fromY; y >= 1; y--) {
       for (let x = 0; x < this.sizeX; x++) {
-        const isBlack = this.grid[y - 1][x].isBlack;
-        this.grid[y][x].setBlack(isBlack);
+        this.grid[y][x].setBlack(this.grid[y - 1][x].isBlack)
       }
     }
+
     for (let x = 0; x < this.sizeX; x++) {
-      this.grid[0][x].setBlack(false);
+      this.grid[0][x].setBlack(false)
     }
   }
 
-  lockPiece(): void {
-    this.activePiece = null;
+  private lockPiece(): void {
+    if (this.activePiece) {
+      for (const { x, y } of this.activePiece.getBlockPositions()) {
+        this.grid[y][x].setBlack(true, false)
+      }
+    }
+
+    this.activePiece = null
+    this.clearFullRows()
+  }
+
+  private gameOver(): void {
+    this.stopFalling()
+    this.activePiece = null
+    this.isRunning = false
+    this.uiCallbacks.onGameOver?.()
+  }
+
+  private clearGrid(): void {
     for (let y = 0; y < this.sizeY; y++) {
-      if (this.isRowFull(y)) {
-        this.clearRow(y);
-        this.clearFullRows();
-        this.setRowsDown(y);
+      for (let x = 0; x < this.sizeX; x++) {
+        this.grid[y][x].setBlack(false)
       }
     }
   }
-  
-  gameOver(): void {
-    if (this.intervalId !== null) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;    
-    }
-      this.activePiece = null;
-    
-  }
-  createBoard(): void {
-    this.board.classList.add('board');
-    this.board.style.gridTemplateColumns = `repeat(${this.sizeX}, ${this.cellSize}px)`;
-    this.board.style.gridTemplateRows = `repeat(${this.sizeY}, ${this.cellSize}px)`;
-    this.parentComponent.appendChild(this.board);
-    this.createCells();
-    this.spawnPiece();
+
+  private createBoard(): void {
+    this.board.classList.add('game__board')
+    this.board.style.gridTemplateColumns = `repeat(${this.sizeX}, ${this.cellSize}px)`
+    this.board.style.gridTemplateRows = `repeat(${this.sizeY}, ${this.cellSize}px)`
+    this.parentComponent.appendChild(this.board)
+    this.createCells()
   }
 
-  createCells(): void {
+  private createCells(): void {
     for (let y = 0; y < this.sizeY; y++) {
-      this.grid[y] = [];
+      this.grid[y] = []
       for (let x = 0; x < this.sizeX; x++) {
         this.grid[y][x] = new Cell(x, y, this.board, this)
-      } 
+      }
     }
-    // this.grid[0][5].sayHello();
-   }
-  spawnPiece(): void {
+  }
+
+  private spawnPiece(): void {
     const x = Math.floor(this.sizeX / 2)
     const type = randomPieceType()
-    
+
     if (!this.canSpawn(type)) {
       this.gameOver()
-      return  // ← важно! дальше не идём
+      return
     }
 
     this.activePiece = new Pivot(x, 0, type, this)
-    this.activePiece.spawn();
+    this.activePiece.spawn()
   }
-  // sayHello(): void {
-  //   console.log('Hello')
-  // }
 }

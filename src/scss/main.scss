@@ -1,4 +1,6 @@
-@use 'grid';
+@use 'variables';
+@use 'game';
+@use 'themes';
 
 *,
 *::before,
@@ -9,10 +11,15 @@
 }
 
 html {
-  color-scheme: only light;
+  color-scheme: dark;
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Rajdhani', system-ui, sans-serif;
   line-height: 1.5;
+  background: #0d0f1a;
+}
+
+#app {
+  min-height: 100vh;
 }

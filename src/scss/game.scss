@@ -1,0 +1,215 @@
+@use 'variables' as *;
+
+.game {
+  min-height: 100vh;
+  padding: $game-vertical-padding 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.04), transparent 35%),
+    radial-gradient(circle at 80% 90%, rgba(255, 255, 255, 0.03), transparent 40%),
+    var(--game-bg);
+  color: #fff;
+  transition: background 0.35s ease;
+}
+
+.game__layout {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.game__arena {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.game__board-host {
+  position: relative;
+}
+
+.game__board {
+  display: grid;
+  gap: $board-gap;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--board-bg);
+  border: 1px solid var(--board-border);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35) inset,
+    0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.game__cell {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background-color: var(--cell-empty);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  transition:
+    background-color 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.12s ease;
+}
+
+.game__cell--filled {
+  background-color: var(--cell-filled);
+  box-shadow:
+    inset 0 -2px 0 rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 10px color-mix(in srgb, var(--cell-filled) 35%, transparent);
+}
+
+.game__cell--active {
+  background-color: var(--cell-active);
+  box-shadow:
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 14px color-mix(in srgb, var(--cell-active) 45%, transparent);
+}
+
+.game__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(6px);
+  z-index: 2;
+}
+
+.game__overlay--start {
+  animation: game-overlay-in 0.35s ease;
+}
+
+.game__overlay--game-over {
+  animation: game-overlay-in 0.35s ease;
+}
+
+.game__btn {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  padding: 14px 34px;
+  border-radius: 999px;
+  font-family: $font-display;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--btn-text);
+  background: var(--btn-bg);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35),
+    0 0 20px color-mix(in srgb, var(--theme-accent) 25%, transparent);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+    box-shadow:
+      0 14px 34px rgba(0, 0, 0, 0.4),
+      0 0 26px color-mix(in srgb, var(--theme-accent) 35%, transparent);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.game__title {
+  margin: 0;
+  font-family: $font-display;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--title-color);
+  text-shadow: 0 0 24px var(--title-glow);
+}
+
+.game__themes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 148px;
+}
+
+.game__themes-label {
+  font-family: $font-ui;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 4px;
+}
+
+.game__theme-btn {
+  appearance: none;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  color: #fff;
+  font-family: $font-ui;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    transform: translateX(3px);
+    border-color: var(--theme-accent);
+  }
+}
+
+.game__theme-btn--active {
+  border-color: var(--theme-accent);
+  background: color-mix(in srgb, var(--theme-accent) 14%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+}
+
+@keyframes game-overlay-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 860px) {
+  .game__layout {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .game__themes {
+    flex-flow: row wrap;
+    justify-content: center;
+    min-width: auto;
+  }
+
+  .game__theme-btn {
+    flex: 1 1 calc(50% - 8px);
+    text-align: center;
+  }
+}

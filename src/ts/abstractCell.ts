@@ -15,13 +15,14 @@ export default class AbstractCell {
     this.parentComponent = parentComponent
 
     const cell = document.createElement('div')
-    cell.classList.add('board__cell')
+    cell.classList.add('game__cell')
     this.element = cell
     this.parentComponent.appendChild(cell)
   }
 
-  setBlack(isBlack: boolean): void {
+  setBlack(isBlack: boolean, isActive = false): void {
     this.isBlack = isBlack
-    this.element.style.setProperty('background-color', isBlack ? '#000' : '#fff', 'important')
+    this.element.classList.toggle('game__cell--filled', isBlack && !isActive)
+    this.element.classList.toggle('game__cell--active', isBlack && isActive)
   }
 }
