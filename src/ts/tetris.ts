@@ -147,7 +147,7 @@ export class Tetris {
       if (!this.isRowFull(y)) continue
       this.clearRow(y)
       this.setRowsDown(y)
-      y--
+      y++
     }
   }
 
