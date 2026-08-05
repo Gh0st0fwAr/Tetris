@@ -4,6 +4,9 @@ import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   base: '/Tetris/',
+  build: {
+    outDir: 'docs',
+  },
   plugins: [vue()],
   resolve: {
     alias: {

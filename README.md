@@ -134,7 +134,7 @@ startGame()
 ```bash
 npm install
 npm run dev       # http://127.0.0.1:5173
-npm run build     # production-сборка в dist/
+npm run build     # production-сборка в docs/
 npm run preview   # предпросмотр сборки
 ```
 
@@ -146,4 +146,8 @@ npm run preview   # предпросмотр сборки
 https://gh0st0fwar.github.io/Tetris/
 ```
 
-В настройках репозитория (**Settings → Pages**) укажите источник: ветка **main**, папка **`/dist`**.
+1. Выполните `npm run build` — файлы попадут в папку `docs/`.
+2. Закоммитьте и запушьте `docs/`.
+3. В настройках репозитория (**Settings → Pages**) укажите источник: ветка **main**, папка **`/docs`**.
+
+> GitHub Pages не умеет публиковать папку `/dist` напрямую — только `/` или `/docs`.
