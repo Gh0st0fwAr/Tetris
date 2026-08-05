@@ -23,6 +23,7 @@
 .game__arena {
   position: relative;
   flex-shrink: 0;
+  min-width: 240px;
 }
 
 .game__board-host {
@@ -77,11 +78,12 @@
   justify-content: center;
   flex-direction: column;
   gap: 16px;
-  padding: 24px;
+  padding: 16px;
   border-radius: 12px;
   background: var(--overlay-bg);
   backdrop-filter: blur(6px);
   z-index: 2;
+  overflow: visible;
 }
 
 .game__overlay--start {
@@ -96,13 +98,14 @@
   appearance: none;
   border: none;
   cursor: pointer;
-  padding: 14px 34px;
+  padding: 14px 28px;
   border-radius: 999px;
-  font-family: $font-display;
+  font-family: $font-ui;
   font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--btn-text);
   background: var(--btn-bg);
   box-shadow:
@@ -129,10 +132,11 @@
 .game__title {
   margin: 0;
   font-family: $font-display;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.5rem, 7vw, 2.75rem);
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--title-color);
   text-shadow: 0 0 24px var(--title-glow);
 }
