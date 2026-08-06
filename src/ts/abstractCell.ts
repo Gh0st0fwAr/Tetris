@@ -1,5 +1,7 @@
 import type { Tetris } from './tetris'
 
+const CLEAR_STAGGER_MS = 45
+
 export default class AbstractCell {
   x: number
   y: number
@@ -21,8 +23,22 @@ export default class AbstractCell {
   }
 
   setBlack(isBlack: boolean, isActive = false): void {
+    if (!isBlack) {
+      this.resetClearAnimation()
+    }
+
     this.isBlack = isBlack
     this.element.classList.toggle('game__cell--filled', isBlack && !isActive)
     this.element.classList.toggle('game__cell--active', isBlack && isActive)
+  }
+
+  playClearAnimation(staggerIndex: number): void {
+    this.element.style.setProperty('--clear-stagger', `${staggerIndex * CLEAR_STAGGER_MS}ms`)
+    this.element.classList.add('game__cell--clearing')
+  }
+
+  resetClearAnimation(): void {
+    this.element.classList.remove('game__cell--clearing')
+    this.element.style.removeProperty('--clear-stagger')
   }
 }

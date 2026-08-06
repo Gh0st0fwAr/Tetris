@@ -16,6 +16,7 @@
   --panel-bg: rgba(0, 229, 255, 0.06);
   --panel-border: rgba(0, 229, 255, 0.2);
   --theme-accent: #00e5ff;
+  --clear-animation: game-clear-neon;
 }
 
 .game--theme-retro {
@@ -52,6 +53,7 @@
   --panel-bg: rgba(51, 255, 51, 0.04);
   --panel-border: rgba(51, 255, 51, 0.35);
   --theme-accent: #33ff33;
+  --clear-animation: game-clear-terminal;
 
   &::after {
     content: '';
@@ -119,6 +121,7 @@
   --panel-bg: rgba(255, 255, 255, 0.65);
   --panel-border: rgba(90, 100, 120, 0.28);
   --theme-accent: #4a6fa5;
+  --clear-animation: game-clear-sketch;
 
   background-size:
     24px 24px,
@@ -185,6 +188,7 @@
   --panel-bg: rgba(255, 213, 107, 0.08);
   --panel-border: rgba(201, 146, 82, 0.45);
   --theme-accent: #ffd56b;
+  --clear-animation: game-clear-woodcraft;
 
   .game__cell--filled,
   .game__cell--active {
@@ -246,6 +250,7 @@
   --panel-bg: rgba(255, 255, 255, 0.06);
   --panel-border: rgba(255, 157, 230, 0.35);
   --theme-accent: #ff4fa3;
+  --clear-animation: game-clear-synthwave;
 
   &::before {
     content: '';
@@ -286,5 +291,110 @@
 
   .game__theme-btn--active {
     box-shadow: 0 0 18px rgba(255, 79, 163, 0.25);
+  }
+}
+
+@keyframes game-clear-neon {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+    opacity: 1;
+  }
+
+  30% {
+    transform: scale(1.15);
+    filter: brightness(2.4);
+    opacity: 1;
+    box-shadow:
+      0 0 18px var(--theme-accent),
+      0 0 32px color-mix(in srgb, var(--cell-filled) 60%, transparent);
+  }
+
+  100% {
+    transform: scale(0.2);
+    filter: brightness(2);
+    opacity: 0;
+  }
+}
+
+@keyframes game-clear-terminal {
+  0% {
+    opacity: 1;
+    transform: scaleX(1);
+    filter: brightness(1);
+  }
+
+  20% {
+    opacity: 0.15;
+  }
+
+  35% {
+    opacity: 1;
+    filter: brightness(1.8);
+  }
+
+  50% {
+    opacity: 0.1;
+  }
+
+  65% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleX(0);
+    filter: brightness(2);
+  }
+}
+
+@keyframes game-clear-sketch {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.55) rotate(10deg);
+    opacity: 0;
+    filter: blur(1.5px);
+  }
+}
+
+@keyframes game-clear-woodcraft {
+  0% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  55% {
+    transform: translateY(5px) scale(0.92) rotate(-4deg);
+    opacity: 0.85;
+  }
+
+  100% {
+    transform: translateY(16px) scale(0.45) rotate(8deg);
+    opacity: 0;
+  }
+}
+
+@keyframes game-clear-synthwave {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: hue-rotate(0deg) brightness(1);
+  }
+
+  45% {
+    transform: scale(1.35, 0.75);
+    opacity: 1;
+    filter: hue-rotate(20deg) brightness(1.5);
+    box-shadow: 0 0 16px rgba(255, 79, 163, 0.65);
+  }
+
+  100% {
+    transform: scale(2.2, 0.05);
+    opacity: 0;
+    filter: hue-rotate(80deg) brightness(1.8);
   }
 }

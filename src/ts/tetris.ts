@@ -16,6 +16,8 @@ const BOARD_GAP = 2
 const BOARD_PADDING = 20
 const VERTICAL_PADDING = 60
 const FALL_INTERVAL_MS = 1000
+const CLEAR_STAGGER_MS = 45
+const CLEAR_DURATION_MS = 380
 
 function calcCellSize(sizeY: number): number {
   const availableHeight = window.innerHeight - VERTICAL_PADDING
@@ -47,6 +49,7 @@ export class Tetris {
 
   private uiCallbacks: TetrisUiCallbacks
   private isRunning = false
+  private isLocking = false
 
   constructor(size: Size, parentComponent: HTMLElement, uiCallbacks: TetrisUiCallbacks = {}) {
     const { sizeX, sizeY, cellSize } = getBoardDimensions(size)
@@ -90,8 +93,7 @@ export class Tetris {
         break
       case 'ArrowDown':
         if (this.activePiece?.moveDown() === false) {
-          this.lockPiece()
-          this.spawnPiece()
+          void this.handleLockAndSpawn()
         }
         break
       case ' ':
@@ -119,11 +121,35 @@ export class Tetris {
     if (this.intervalId !== null) return
 
     this.intervalId = setInterval(() => {
+      if (this.isLocking) return
+
       if (this.activePiece?.moveDown() === false) {
-        this.lockPiece()
-        this.spawnPiece()
+        void this.handleLockAndSpawn()
       }
     }, FALL_INTERVAL_MS)
+  }
+
+  private async handleLockAndSpawn(): Promise<void> {
+    if (this.isLocking) return
+
+    this.isLocking = true
+    await this.lockPiece()
+    this.spawnPiece()
+    this.isLocking = false
+  }
+
+  private getClearAnimationDuration(): number {
+    return CLEAR_DURATION_MS + (this.sizeX - 1) * CLEAR_STAGGER_MS
+  }
+
+  private animateRowClear(y: number): Promise<void> {
+    for (let x = 0; x < this.sizeX; x++) {
+      this.grid[y][x].playClearAnimation(x)
+    }
+
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, this.getClearAnimationDuration())
+    })
   }
 
   private stopFalling(): void {
@@ -142,13 +168,20 @@ export class Tetris {
     }
   }
 
-  private clearFullRows(): void {
+  private async clearFullRows(): Promise<void> {
+    const wasFalling = this.intervalId !== null
+    if (wasFalling) this.stopFalling()
+
     for (let y = this.sizeY - 1; y >= 0; y--) {
       if (!this.isRowFull(y)) continue
+
+      await this.animateRowClear(y)
       this.clearRow(y)
       this.setRowsDown(y)
       y++
     }
+
+    if (wasFalling && this.isRunning) this.startFalling()
   }
 
   private setRowsDown(fromY: number): void {
@@ -163,7 +196,7 @@ export class Tetris {
     }
   }
 
-  private lockPiece(): void {
+  private async lockPiece(): Promise<void> {
     if (this.activePiece) {
       for (const { x, y } of this.activePiece.getBlockPositions()) {
         this.grid[y][x].setBlack(true, false)
@@ -171,7 +204,7 @@ export class Tetris {
     }
 
     this.activePiece = null
-    this.clearFullRows()
+    await this.clearFullRows()
   }
 
   private gameOver(): void {
