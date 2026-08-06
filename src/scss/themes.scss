@@ -1,5 +1,8 @@
 .game--theme-neon {
-  --game-bg: #0d0f1a;
+  --game-bg:
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.04), transparent 35%),
+    radial-gradient(circle at 80% 90%, rgba(255, 255, 255, 0.03), transparent 40%),
+    #0d0f1a;
   --board-bg: #121528;
   --board-border: rgba(0, 229, 255, 0.25);
   --cell-empty: #1a1f35;
@@ -16,69 +19,272 @@
 }
 
 .game--theme-retro {
-  --game-bg: #0a140a;
-  --board-bg: #0f1f0f;
-  --board-border: rgba(57, 255, 20, 0.35);
-  --cell-empty: #142814;
-  --cell-filled: #39ff14;
-  --cell-active: #b8ff9f;
-  --overlay-bg: rgba(5, 12, 5, 0.82);
-  --btn-bg: linear-gradient(135deg, #39ff14 0%, #1a8f0f 100%);
-  --btn-text: #041004;
-  --title-color: #39ff14;
-  --title-glow: rgba(57, 255, 20, 0.45);
-  --panel-bg: rgba(57, 255, 20, 0.08);
-  --panel-border: rgba(57, 255, 20, 0.25);
-  --theme-accent: #39ff14;
+  --game-text: #5dff5d;
+  --game-bg: #020a02;
+  --board-bg: #041104;
+  --board-border: #2d8f2d;
+  --board-border-width: 3px;
+  --board-radius: 0;
+  --board-padding: 14px;
+  --board-shadow:
+    0 0 0 3px #0d2b0d inset,
+    0 0 24px rgba(51, 255, 51, 0.12),
+    0 0 60px rgba(51, 255, 51, 0.08);
+  --cell-radius: 0;
+  --cell-empty: #031403;
+  --cell-empty-shadow: inset 0 0 0 1px rgba(51, 255, 51, 0.12);
+  --cell-filled: #33ff33;
+  --cell-filled-shadow: inset 0 0 8px rgba(51, 255, 51, 0.35);
+  --cell-active: #b6ffb6;
+  --cell-active-shadow: inset 0 0 10px rgba(182, 255, 182, 0.45);
+  --overlay-bg: rgba(2, 8, 2, 0.92);
+  --overlay-blur: none;
+  --btn-bg: #020a02;
+  --btn-text: #5dff5d;
+  --btn-border: 2px solid #33ff33;
+  --btn-radius: 0;
+  --btn-font: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+  --btn-shadow: 0 0 12px rgba(51, 255, 51, 0.25);
+  --title-color: #33ff33;
+  --title-glow: rgba(51, 255, 51, 0.5);
+  --title-font: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+  --title-shadow: 0 0 10px rgba(51, 255, 51, 0.45);
+  --panel-bg: rgba(51, 255, 51, 0.04);
+  --panel-border: rgba(51, 255, 51, 0.35);
+  --theme-accent: #33ff33;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.12),
+      rgba(0, 0, 0, 0.12) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: multiply;
+  }
+
+  .game__btn:hover {
+    filter: none;
+    background: rgba(51, 255, 51, 0.08);
+    box-shadow: 0 0 18px rgba(51, 255, 51, 0.35);
+  }
+
+  .game__theme-btn--active {
+    box-shadow: inset 0 0 10px rgba(51, 255, 51, 0.15);
+  }
 }
 
 .game--theme-ocean {
-  --game-bg: #061018;
-  --board-bg: #0c1a24;
-  --board-border: rgba(64, 196, 255, 0.28);
-  --cell-empty: #112433;
-  --cell-filled: #40c4ff;
-  --cell-active: #80deea;
-  --overlay-bg: rgba(4, 12, 18, 0.8);
-  --btn-bg: linear-gradient(135deg, #40c4ff 0%, #0288d1 100%);
-  --btn-text: #031018;
-  --title-color: #80deea;
-  --title-glow: rgba(64, 196, 255, 0.4);
-  --panel-bg: rgba(64, 196, 255, 0.08);
-  --panel-border: rgba(64, 196, 255, 0.22);
-  --theme-accent: #40c4ff;
+  --game-text: #2f3440;
+  --themes-label-opacity: 0.75;
+  --game-bg:
+    linear-gradient(rgba(120, 140, 170, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 140, 170, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, #f7f3ea 0%, #ebe4d6 100%);
+  --board-bg: #fffdf8;
+  --board-border: #8a96a8;
+  --board-border-width: 2px;
+  --board-radius: 4px;
+  --board-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 14px 28px rgba(60, 70, 90, 0.14),
+    0 2px 0 #d8d0c2;
+  --cell-radius: 2px;
+  --cell-empty: #faf7f0;
+  --cell-empty-shadow: inset 0 0 0 1px rgba(90, 100, 120, 0.22);
+  --cell-filled: #4a6fa5;
+  --cell-filled-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  --cell-active: #c44b4b;
+  --cell-active-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  --overlay-bg: rgba(255, 253, 248, 0.88);
+  --overlay-blur: blur(2px);
+  --btn-bg: #fffdf8;
+  --btn-text: #2f3440;
+  --btn-border: 2px dashed #6b7890;
+  --btn-radius: 6px;
+  --btn-shadow: 0 8px 18px rgba(60, 70, 90, 0.12);
+  --title-color: #2f3440;
+  --title-glow: transparent;
+  --title-shadow: 2px 2px 0 rgba(120, 140, 170, 0.25);
+  --panel-bg: rgba(255, 255, 255, 0.65);
+  --panel-border: rgba(90, 100, 120, 0.28);
+  --theme-accent: #4a6fa5;
+
+  background-size:
+    24px 24px,
+    24px 24px,
+    auto;
+
+  .game__btn:hover {
+    filter: none;
+    background: #f3efe6;
+    border-color: #4a6fa5;
+  }
+
+  .game__theme-btn--active {
+    box-shadow: 2px 2px 0 rgba(74, 111, 165, 0.18);
+  }
 }
 
 .game--theme-sunset {
-  --game-bg: #140a12;
-  --board-bg: #221018;
-  --board-border: rgba(255, 107, 107, 0.3);
-  --cell-empty: #2a1520;
-  --cell-filled: #ff6b6b;
-  --cell-active: #ffd166;
-  --overlay-bg: rgba(16, 6, 10, 0.8);
-  --btn-bg: linear-gradient(135deg, #ff6b6b 0%, #c44569 100%);
-  --btn-text: #1a0608;
-  --title-color: #ffd166;
-  --title-glow: rgba(255, 107, 107, 0.45);
-  --panel-bg: rgba(255, 107, 107, 0.08);
-  --panel-border: rgba(255, 107, 107, 0.22);
-  --theme-accent: #ff6b6b;
+  --game-text: #f6ead8;
+  --game-bg:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.015) 0,
+      rgba(255, 255, 255, 0.015) 2px,
+      transparent 2px,
+      transparent 9px
+    ),
+    linear-gradient(180deg, #4a2818 0%, #2d160d 45%, #1a0c07 100%);
+  --board-bg: linear-gradient(180deg, #6b3f22 0%, #4d2b16 100%);
+  --board-border: #a0713f;
+  --board-border-width: 4px;
+  --board-radius: 10px;
+  --board-padding: 12px;
+  --board-shadow:
+    0 0 0 2px #2a1508 inset,
+    0 10px 0 #1f0d05,
+    0 22px 40px rgba(0, 0, 0, 0.45);
+  --cell-radius: 6px;
+  --cell-empty: #3a2212;
+  --cell-empty-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.45),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  --cell-filled: linear-gradient(180deg, #ffd56b 0%, #c8871d 100%);
+  --cell-filled-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -3px 0 rgba(90, 50, 10, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.25);
+  --cell-active: linear-gradient(180deg, #ff8a65 0%, #bf360c 100%);
+  --cell-active-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -3px 0 rgba(80, 20, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  --overlay-bg: rgba(35, 18, 10, 0.82);
+  --btn-bg: linear-gradient(180deg, #8b5a2b 0%, #5c3518 100%);
+  --btn-text: #fff3df;
+  --btn-border: 2px solid #c99252;
+  --btn-radius: 8px;
+  --btn-shadow:
+    0 4px 0 #2a1508,
+    0 10px 20px rgba(0, 0, 0, 0.35);
+  --title-color: #ffd56b;
+  --title-glow: rgba(255, 213, 107, 0.35);
+  --title-shadow: 0 2px 0 #5c3518;
+  --panel-bg: rgba(255, 213, 107, 0.08);
+  --panel-border: rgba(201, 146, 82, 0.45);
+  --theme-accent: #ffd56b;
+
+  .game__cell--filled,
+  .game__cell--active {
+    background-color: transparent;
+    background-image: var(--cell-filled);
+  }
+
+  .game__cell--active {
+    background-image: var(--cell-active);
+  }
+
+  .game__btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
+
+  .game__btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #2a1508;
+  }
 }
 
 .game--theme-minimal {
-  --game-bg: #111111;
-  --board-bg: #1a1a1a;
-  --board-border: rgba(255, 255, 255, 0.12);
-  --cell-empty: #242424;
-  --cell-filled: #f5f5f5;
-  --cell-active: #bdbdbd;
-  --overlay-bg: rgba(0, 0, 0, 0.75);
-  --btn-bg: linear-gradient(135deg, #ffffff 0%, #bdbdbd 100%);
-  --btn-text: #111111;
-  --title-color: #ffffff;
-  --title-glow: rgba(255, 255, 255, 0.25);
-  --panel-bg: rgba(255, 255, 255, 0.05);
-  --panel-border: rgba(255, 255, 255, 0.14);
-  --theme-accent: #ffffff;
+  --game-text: #f8eaff;
+  --game-bg: linear-gradient(180deg, #12082a 0%, #2a1248 38%, #611845 72%, #ff4fa3 100%);
+  --board-bg: rgba(10, 4, 24, 0.72);
+  --board-border: rgba(255, 111, 233, 0.55);
+  --board-border-width: 2px;
+  --board-radius: 0;
+  --board-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 0 30px rgba(255, 79, 163, 0.25),
+    0 18px 40px rgba(0, 0, 0, 0.45);
+  --cell-radius: 0;
+  --cell-empty: rgba(255, 255, 255, 0.04);
+  --cell-empty-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --cell-filled: rgba(0, 245, 255, 0.85);
+  --cell-filled-shadow:
+    0 0 10px rgba(0, 245, 255, 0.45),
+    inset 0 0 8px rgba(255, 255, 255, 0.25);
+  --cell-active: rgba(255, 79, 163, 0.9);
+  --cell-active-shadow:
+    0 0 14px rgba(255, 79, 163, 0.55),
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
+  --overlay-bg: rgba(18, 8, 42, 0.78);
+  --overlay-blur: blur(8px);
+  --btn-bg: linear-gradient(180deg, #ff9de6 0%, #7b2cff 100%);
+  --btn-text: #1a062e;
+  --btn-border: 1px solid rgba(255, 255, 255, 0.35);
+  --btn-radius: 0;
+  --btn-shadow:
+    0 0 18px rgba(255, 79, 163, 0.35),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  --title-color: #fff;
+  --title-glow: rgba(255, 157, 230, 0.65);
+  --title-shadow:
+    0 0 12px rgba(255, 79, 163, 0.55),
+    2px 2px 0 #7b2cff;
+  --panel-bg: rgba(255, 255, 255, 0.06);
+  --panel-border: rgba(255, 157, 230, 0.35);
+  --theme-accent: #ff4fa3;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 18%;
+    width: min(42vw, 280px);
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffe27a 0%, #ff6b45 55%, #ff2f7a 100%);
+    box-shadow: 0 0 80px rgba(255, 107, 69, 0.35);
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 42%;
+    z-index: 0;
+    background:
+      linear-gradient(rgba(255, 79, 163, 0.45) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 79, 163, 0.45) 1px, transparent 1px);
+    background-size: 44px 44px;
+    transform: perspective(220px) rotateX(68deg);
+    transform-origin: bottom center;
+    mask-image: linear-gradient(to top, #000 35%, transparent 100%);
+  }
+
+  .game__title {
+    background: linear-gradient(180deg, #fff 0%, #ff9de6 100%);
+    background-clip: text;
+    color: transparent;
+  }
+
+  .game__theme-btn--active {
+    box-shadow: 0 0 18px rgba(255, 79, 163, 0.25);
+  }
 }

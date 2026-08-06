@@ -2,10 +2,10 @@ export type ThemeId = 'neon' | 'retro' | 'ocean' | 'sunset' | 'minimal'
 
 export const THEMES: { id: ThemeId; label: string }[] = [
   { id: 'neon', label: 'Neon' },
-  { id: 'retro', label: 'Retro' },
-  { id: 'ocean', label: 'Ocean' },
-  { id: 'sunset', label: 'Sunset' },
-  { id: 'minimal', label: 'Minimal' },
+  { id: 'retro', label: 'Terminal' },
+  { id: 'ocean', label: 'Sketch' },
+  { id: 'sunset', label: 'Woodcraft' },
+  { id: 'minimal', label: 'Synthwave' },
 ]
 
 export const DEFAULT_THEME: ThemeId = 'neon'
